@@ -9,18 +9,22 @@ from snippets.serializers import SnippetSerializer
 # from rest_framework import mixins
 from rest_framework import generics
 
-# Added  for 'Tutorial 4: Authentication & Permissions'
+# Added for 'Tutorial 4: Authentication & Permissions'
 from django.contrib.auth.models import User
 from snippets.serializers import UserSerializer
 from rest_framework import permissions
 from snippets.permissions import IsOwnerOrReadOnly
 
-
-# Added  for 'Tutorial 5: Relationships & Hyperlinked APIs'
+# Added for 'Tutorial 5: Relationships & Hyperlinked APIs'
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import renderers
+
+# Added for 'Tutorial 6: ViewSets & Routers'
+from rest_framework import viewsets
+from rest_framework.decorators import action
+
 
 # class SnippetList(APIView):
 #     """
@@ -36,7 +40,7 @@ from rest_framework import renderers
 #         if serializer.is_valid():
 #             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class SnippetList(mixins.ListModelMixin,
 #                   mixins.CreateModelMixin,
@@ -81,7 +85,7 @@ class SnippetList(generics.ListCreateAPIView):
 #         if serializer.is_valid():
 #             serializer.save()
 #             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #     def delete(self, request, pk, format=None):
 #         snippet = self.get_object(pk)
@@ -109,10 +113,12 @@ class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly]
 
 
-# Added the following two fields for 'Tutorial 4: Authentication & Permissions'
+# Added for 'Tutorial 4: Authentication & Permissions'
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -139,3 +145,33 @@ class SnippetHighlight(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         snippet = self.get_object()
         return Response(snippet.highlighted)
+
+
+# Tutorial 6: ViewSets & Routers
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class SnippetViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+
+    Additionally we also provide an extra `highlight` action.
+    """
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
+
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
