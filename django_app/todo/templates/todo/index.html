@@ -1,0 +1,102 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <title>
+    todo
+  </title>
+  <link rel="stylesheet" type="text/css" href="{% static 'todo/css/style.css' %}" />
+</head>
+
+<body>
+  <h1>
+    todo
+  </h1>
+
+  <hr>
+
+  <p>Projects</p>
+  <table>
+    <tr>
+      <th>No.</th>
+      <th>name</th>
+      <th>Owner</th>
+      <th>Create date</th>
+    </tr>
+    {% for item in projects %}
+    <tr>
+      <td>{{item.id}}</td>
+      <td>{{item.name}}</td>
+      <td>{{item.owner}}</td>
+      <td>{{item.create_date}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <hr>
+
+  <p>Participants</p>
+  <table>
+    <tr>
+      <th>No.</th>
+      <th>Project</th>
+      <th>Participant</th>
+    </tr>
+    {% for item in participants %}
+    <tr>
+      <td>{{item.id}}</td>
+      <td>{{item.project}}</td>
+      <td>{{item.user}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <hr>
+
+  <p>Todo</p>
+  <table>
+    <tr>
+      <th>No.</th>
+      <th>Title</th>
+      <th>Content</th>
+      <th>Status</th>
+      <th>Creator</th>
+      <th>Create date</th>
+      <th>Start date</th>
+    </tr>
+    {% for item in todos %}
+    <tr>
+      <td>{{item.id}}</td>
+      <td>{{item.title}}</td>
+      <td>{{item.content}}</td>
+      <td>{{item.status}}</td>
+      <td>{{item.creator}}</td>
+      <td>{{item.create_date}}</td>
+      <td>{{item.start_date}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <hr>
+
+  <p>Workers</p>
+  <table>
+    <tr>
+      <th>No.</th>
+      <th>Todo</th>
+      <th>Worker</th>
+    </tr>
+    {% for item in workers %}
+    <tr>
+      <td>{{item.id}}</td>
+      <td>{{item.todo.id}}</td>
+      <td>{{item.user}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+</body>
+
+</html>

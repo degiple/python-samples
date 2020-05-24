@@ -20,29 +20,30 @@
 
 ### project
 
-- project_id
-- project_name
+- id
+- name
 - create_date
-- participants_id
+- owner
 
 ## participants
 
-- participants_id
+- id
+- project_id
 - user_id
   
 ### Todo
 
-- todo_id
+- id
 - title
 - content
 - status
 - start_date
 - end_date
-- crate_user_id
+- create_user
 - create_date
-- workers_id
 
 ## workers
 
-- workers_id
+- id
+- todo_id
 - user_id
