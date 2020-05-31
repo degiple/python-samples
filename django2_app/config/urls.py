@@ -1,7 +1,7 @@
-"""django_app URL Configuration
+"""config URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
+    https://docs.djangoproject.com/en/2.2/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -15,19 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-# from django.conf.urls import url
-from rest_framework import routers
-from rest import views
-# import hello.views as hello
 
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
+from django.contrib.auth import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello/', include('hello.urls')),
-    path('sns/', include('sns.urls')),
-    path('todo/', include('todo.urls')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/login/', views.LoginView.as_view(), name='login')
 ]
